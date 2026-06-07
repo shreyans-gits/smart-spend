@@ -1,6 +1,8 @@
 import sqlite3
 from datetime import datetime
 from db.schema import DB_NAME
+from models.expense import Expense
+
 
 VALID_CATEGORIES = ["Food", "Transport", "Utilities", "Entertainment", "Housing", "Misc"]
 
@@ -66,9 +68,11 @@ def get_expenses_by_date(date: str, db_path: str = DB_NAME) -> list:
     try:
         cursor.execute(query, (date,))
         rows = cursor.fetchall()
-        return rows
+        return [Expense(*row) for row in rows]
+    
     except sqlite3.Error as e:
         raise sqlite3.Error(f"Database error during get_expenses_by_date: {e}") from e
+    
     finally:
         conn.close()
 
