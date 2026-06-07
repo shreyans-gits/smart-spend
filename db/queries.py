@@ -2,9 +2,8 @@ import sqlite3
 from datetime import datetime
 from db.schema import DB_NAME
 from models.expense import Expense
+from config import VALID_CATEGORIES
 
-
-VALID_CATEGORIES = ["Food", "Transport", "Utilities", "Entertainment", "Housing", "Misc"]
 
 def validate_expense_data(date_str: str, source: str, category: str):
     """Helper validation to enforce strict schema constraints."""
