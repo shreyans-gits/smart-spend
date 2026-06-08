@@ -30,6 +30,13 @@ def init_db(db_path: str = DB_NAME):
             );
         """)
 
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS daily_summary (
+                date TEXT PRIMARY KEY,
+                leftover REAL NOT NULL
+            );
+        """)
+
         cursor.execute("SELECT COUNT(*) FROM settings;")
         if cursor.fetchone()[0] == 0:
             default_settings = [
