@@ -2,8 +2,7 @@ import sqlite3
 from datetime import datetime
 from db.schema import DB_NAME
 from models.expense import Expense
-from config import VALID_CATEGORIES
-
+import config
 
 def validate_expense_data(date_str: str, source: str, category: str):
     """Helper validation to enforce strict schema constraints."""
@@ -15,8 +14,8 @@ def validate_expense_data(date_str: str, source: str, category: str):
     if source not in ("scan", "manual"):
         raise ValueError(f"Invalid source '{source}'. Must be either 'scan' or 'manual'.")
 
-    if category not in VALID_CATEGORIES:
-        raise ValueError(f"Invalid category '{category}'. Must be one of {VALID_CATEGORIES}.")
+    if category not in config.VALID_CATEGORIES:
+        raise ValueError(f"Invalid category '{category}'. Must be one of {config.VALID_CATEGORIES}.")
 
 
 def add_expense(date: str, amount: float, category: str, source: str, raw_text: str = None, db_path: str = DB_NAME) -> int:
