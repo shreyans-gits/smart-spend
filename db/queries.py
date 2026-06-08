@@ -1,8 +1,61 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from db.schema import DB_NAME
 from models.expense import Expense
 import config
+
+def get_yesterday_leftover(today_date: str, db_path: str = DB_NAME) -> float:
+    """
+    Calculates yesterday's date based on today_date, looks it up in 
+    daily_summary, and returns the leftover amount. Returns 0.0 if not found.
+    """
+    try:
+        today_dt = datetime.strptime(today_date, "%Y-%m-%d")
+        yesterday_dt = today_dt - timedelta(days=1)
+        yesterday_date = yesterday_dt.strftime("%Y-%m-%d")
+    except ValueError:
+        raise ValueError(f"Invalid today_date format '{today_date}'. Expected 'YYYY-MM-DD'.")
+
+    query = "SELECT leftover FROM daily_summary WHERE date = ?;"
+    
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query, (yesterday_date,))
+        result = cursor.fetchone()
+        return float(result[0]) if result is not None else 0.0
+    except sqlite3.Error as e:
+        raise sqlite3.Error(f"Database error during get_yesterday_leftover: {e}") from e
+    finally:
+        conn.close()
+
+
+def save_daily_summary(date: str, leftover: float, db_path: str = DB_NAME):
+    """
+    Inserts or updates the leftover amount for a specific date in daily_summary.
+    Uses an upsert pattern matching update_settings.
+    """
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError(f"Invalid summary date format '{date}'. Expected 'YYYY-MM-DD'.")
+
+    query = """
+        INSERT INTO daily_summary (date, leftover)
+        VALUES (?, ?)
+        ON CONFLICT(date) DO UPDATE SET leftover = excluded.leftover;
+    """
+    
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query, (date, leftover))
+        conn.commit()
+    except sqlite3.Error as e:
+        conn.rollback()
+        raise sqlite3.Error(f"Database error during save_daily_summary: {e}") from e
+    finally:
+        conn.close()
 
 def validate_expense_data(date_str: str, source: str, category: str):
     """Helper validation to enforce strict schema constraints."""
