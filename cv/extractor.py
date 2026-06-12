@@ -8,7 +8,7 @@ def extract_total(raw_text: str) -> float | None:
     full_cleaned_text = "\n".join(cleaned_lines)
     price_regex = r"\d+(?:[.,]\d+)*\.\d{2}"
 
-    keywords = ["TOTAL", "GRAND TOTAL", "AMOUNT DUE", "NET AMOUNT", "CASH"]
+    keywords = ["GRAND TOTAL","CASH", "AMOUNT DUE", "NET AMOUNT", "TOTAL"]
     for keyword in keywords:
         for line in cleaned_lines:
             if keyword in line:
