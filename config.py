@@ -9,3 +9,5 @@ except Exception as e:
 
 DAILY_BUDGET = float(_raw_settings.get("daily_budget", 50.00))
 ROLLOVER_ENABLED = _raw_settings.get("rollover_enabled", "false").lower() == "true"
+
+TESSERACT_PATH = r"D:\Program Files\Tesseract-OCR\tesseract.exe"
