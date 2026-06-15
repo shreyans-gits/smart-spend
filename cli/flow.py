@@ -18,13 +18,6 @@ from db.queries import (
     get_expenses_by_date
 )
 
-import sys
-import os
-import re
-from datetime import datetime
-import cv2
-import numpy as np
-
 def get_current_date_str() -> str:
     return datetime.now().strftime("%Y-%m-%d")
 
@@ -99,12 +92,10 @@ def scan_flow():
     
     add_expense(
         date=today_str,
-        amount=final_amount,
+        amount=user_share,
         category=category,
-        description=description,
-        user_share=user_share,
         source="scan",
-        raw_text=raw_text
+        raw_text=raw_text or description
     )
     print("Expense successfully saved to database.")
 
@@ -128,10 +119,8 @@ def manual_flow():
     
     add_expense(
         date=today_str,
-        amount=final_amount,
+        amount=user_share,
         category=category,
-        description=description,
-        user_share=user_share,
         source="manual",
         raw_text=description
     )
@@ -146,7 +135,7 @@ def view_budget_flow():
     if not expenses:
         print("No expenses recorded today.")
     for exp in expenses:
-        print(f"- [{exp['category']}] {exp['description']}: Total: {exp['amount']} | Your Share: {exp['user_share']}")
+        print(f"- [{exp.category}] Note/Text: {exp.raw_text} | Your Share: {exp.amount}")
     
     total_spent_today = get_daily_total(today_str)
     yesterday_leftover = get_yesterday_leftover(today_str)

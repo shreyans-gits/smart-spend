@@ -9,5 +9,3 @@ class Expense:
     category: str
     source: str
     raw_text: Optional[str] = None
-
-    
