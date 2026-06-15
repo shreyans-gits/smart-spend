@@ -3,12 +3,9 @@ from datetime import datetime, timedelta
 from db.schema import DB_NAME
 from models.expense import Expense
 import config
+from models.expense import Expense
 
 def get_yesterday_leftover(today_date: str, db_path: str = DB_NAME) -> float:
-    """
-    Calculates yesterday's date based on today_date, looks it up in 
-    daily_summary, and returns the leftover amount. Returns 0.0 if not found.
-    """
     try:
         today_dt = datetime.strptime(today_date, "%Y-%m-%d")
         yesterday_dt = today_dt - timedelta(days=1)
@@ -31,10 +28,6 @@ def get_yesterday_leftover(today_date: str, db_path: str = DB_NAME) -> float:
 
 
 def save_daily_summary(date: str, leftover: float, db_path: str = DB_NAME):
-    """
-    Inserts or updates the leftover amount for a specific date in daily_summary.
-    Uses an upsert pattern matching update_settings.
-    """
     try:
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
@@ -58,7 +51,6 @@ def save_daily_summary(date: str, leftover: float, db_path: str = DB_NAME):
         conn.close()
 
 def validate_expense_data(date_str: str, source: str, category: str):
-    """Helper validation to enforce strict schema constraints."""
     try:
         datetime.strptime(date_str, "%Y-%m-%d")
     except ValueError:
@@ -72,10 +64,6 @@ def validate_expense_data(date_str: str, source: str, category: str):
 
 
 def add_expense(date: str, amount: float, category: str, source: str, raw_text: str = None, db_path: str = DB_NAME) -> int:
-    """
-    Validates and inserts a new expense into the database.
-    Returns the auto-generated ID of the inserted row.
-    """
     validate_expense_data(date_str=date, source=source, category=category)
 
     query = """
@@ -97,12 +85,6 @@ def add_expense(date: str, amount: float, category: str, source: str, raw_text: 
 
 
 def get_expenses_by_date(date: str, db_path: str = DB_NAME) -> list:
-    """
-    Retrieves all expenses matching a specific YYYY-MM-DD date.
-    
-    TODO: Refactor to return a list of Expense dataclass instances 
-          instead of raw tuples once models/expense.py is finished.
-    """
     try:
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
@@ -129,10 +111,6 @@ def get_expenses_by_date(date: str, db_path: str = DB_NAME) -> list:
 
 
 def get_daily_total(date: str, db_path: str = DB_NAME) -> float:
-    """
-    Calculates the sum total of all expenses for a specific date.
-    Returns 0.0 if there are no expenses.
-    """
     try:
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
@@ -153,10 +131,6 @@ def get_daily_total(date: str, db_path: str = DB_NAME) -> float:
 
 
 def get_settings(db_path: str = DB_NAME) -> dict:
-    """
-    Retrieves all application settings as key-value pairs.
-    Returns a flat dictionary (e.g., {'daily_budget': '50.00'}).
-    """
     query = "SELECT key, value FROM settings;"
     
     conn = sqlite3.connect(db_path)
@@ -172,10 +146,6 @@ def get_settings(db_path: str = DB_NAME) -> dict:
 
 
 def update_settings(key: str, value: str, db_path: str = DB_NAME):
-    """
-    Updates or inserts a configuration setting key-value pair.
-    Values should be passed as strings to maintain database uniformity.
-    """
     query = """
         INSERT INTO settings (key, value) 
         VALUES (?, ?)
