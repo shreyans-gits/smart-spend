@@ -1,23 +1,28 @@
+import sys
 from db.schema import init_db
+from cli.flow import scan_flow, manual_flow, view_budget_flow
 
-def main():
-    print("--- Step 1: Initializing the Database ---")
-    init_db()
-    print("Database initialization step verified.\n")
+init_db()
+import config
 
-    print("--- Step 2: Importing Configuration Pipeline ---")
-    import config
-    
-    print("--- Step 3: Verifying Extracted Configuration Values ---")
-    print(f"DAILY_BUDGET     : {config.DAILY_BUDGET} (Type: {type(config.DAILY_BUDGET).__name__})")
-    print(f"ROLLOVER_ENABLED : {config.ROLLOVER_ENABLED} (Type: {type(config.ROLLOVER_ENABLED).__name__})")
-    print(f"VALID_CATEGORIES : {config.VALID_CATEGORIES}")
-    
-    print("\n--- Status ---")
-    if config.DAILY_BUDGET == 50.0 and config.ROLLOVER_ENABLED is False:
-        print("Success! The data pipeline chain is solid. Clear for Phase 2.")
-    else:
-        print("Warning: Loaded configuration does not match default expectations.")
+print("=== Smart Spend CLI Terminal Active ===")
 
-if __name__ == "__main__":
-    main()
+try:
+    while True:
+        print("\n1. Log expense (scan)\n2. Log expense (manual)\n3. View today's budget\n4. Exit")
+        choice = input("Select an option (1-4): ").strip()
+        
+        if choice == "1":
+            scan_flow()
+        elif choice == "2":
+            manual_flow()
+        elif choice == "3":
+            view_budget_flow()
+        elif choice == "4":
+            print("\nGoodbye!")
+            break
+        else:
+            print("Invalid option, try again.")
+except KeyboardInterrupt:
+    print("\n\nSession interrupted. Goodbye!")
+    sys.exit(0)
