@@ -95,7 +95,7 @@ def scan_flow():
         amount=user_share,
         category=category,
         source="scan",
-        raw_text=raw_text or description
+        raw_text=description
     )
     print("Expense successfully saved to database.")
 
