@@ -1,12 +1,13 @@
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from flask import Flask , render_template
 from datetime import datetime
 import config
 from budget.engine import get_budget_state
 from db.queries import get_expenses_by_date, get_daily_total, get_yesterday_leftover
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 app = Flask(__name__)
 
