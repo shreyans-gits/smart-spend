@@ -7,5 +7,28 @@
 </head>
 <body>
     <h1>SmartSpend Dashboard</h1>
+    <p>Date: {{ today_date }}</p>
+
+    <hr>
+
+    <h2>Financial Summary</h2>
+    <p>Effective Budget Today: {{ effective_budget }}</p>
+    <p>Total Spent Today: {{ total_spent }}</p>
+    <p>Remaining Balance: {{ remaining }}</p>
+
+    {% if remaining < 0 %}
+        <p style="color: red; font-weight: bold;">Warning: You have exceeded your daily limit!</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Itemized Daily Spending</h2>
+    <ul>
+        {% for exp in expenses %}
+            <li><strong>[{{ exp.category }}]</strong> {{ exp.raw_text }} - {{ exp.amount }}</li>
+        {% else %}
+            <li>No expenses recorded today.</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
