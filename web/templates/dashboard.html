@@ -12,9 +12,25 @@
     <hr>
 
     <h2>Financial Summary</h2>
-    <p>Effective Budget Today: {{ effective_budget }}</p>
-    <p>Total Spent Today: {{ total_spent }}</p>
-    <p>Remaining Balance: {{ remaining }}</p>
+    <div>
+        <h3>Spent Today</h3>
+        <p>{{ total_spent }}</p>
+    </div>
+
+    <div>
+        <h3>Remaining</h3>
+        <p>{{ remaining }}</p>
+    </div>
+
+    <div>
+        <h3>Effective Budget</h3>
+        <p>{{ effective_budget }}</p>
+    </div>
+
+    <div>
+        <h3>Base Budget</h3>
+        <p>{{ daily_budget }}</p>
+    </div>
 
     {% if remaining < 0 %}
         <p style="color: red; font-weight: bold;">Warning: You have exceeded your daily limit!</p>
