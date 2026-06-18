@@ -4,10 +4,13 @@ from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from flask import Flask , render_template
+from flask import Flask , render_template , redirect , url_for, request
+from db.schema import init_db
+init_db()
+from db.queries import get_expenses_by_date, get_daily_total, get_yesterday_leftover , add_expense
 import config
 from budget.engine import get_budget_state
-from db.queries import get_expenses_by_date, get_daily_total, get_yesterday_leftover
+
 
 app = Flask(__name__)
 
@@ -37,8 +40,25 @@ def dashboard():
         remaining=remaining,
         effective_budget=effective_budget,
         daily_budget=config.DAILY_BUDGET,
-        today_date=today_str
+        today_date=today_str,
+        valid_categories = config.VALID_CATEGORIES
     )
+
+@app.route("/add-expense", methods = ["POST"])
+def add_expense_route():
+    amount = float(request.form.get("amount", 0.0))
+    category = request.form.get("category")
+    description = request.form.get("description", "").strip()
+    today_str = get_current_date_str()
+
+    add_expense(
+        date = today_str,
+        amount = amount,
+        category = category,
+        source = "manual",
+        raw_text = description
+    )
+    return redirect(url_for("dashboard"))
 
 if __name__ == "__main__":
     app.run(debug=True)
