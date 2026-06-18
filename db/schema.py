@@ -3,6 +3,8 @@ import sqlite3
 
 DB_NAME = "expense_tracker.db"
 
+
+
 def init_db(db_path: str = DB_NAME):
     db_dir = os.path.dirname(db_path)
     if db_dir:
@@ -40,7 +42,7 @@ def init_db(db_path: str = DB_NAME):
         cursor.execute("SELECT COUNT(*) FROM settings;")
         if cursor.fetchone()[0] == 0:
             default_settings = [
-                ("daily_budget", "50.00"),
+                ("daily_budget", "250.00"),
                 ("rollover_enabled", "false")
             ]
             cursor.executemany(
